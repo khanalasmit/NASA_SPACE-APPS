@@ -1,0 +1,10 @@
+period
+duration
+depth
+radius
+insol
+teq
+teff
+srad
+logg
+mag

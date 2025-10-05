@@ -1,0 +1,8 @@
+{
+  "model_type": "TESS Transfer Learning",
+  "adaptation_method": "ensemble_transfer",
+  "training_samples": 5860,
+  "test_accuracy": 0.8318452380952381,
+  "feature_count": 10,
+  "timestamp": "2025-10-05T21:39:39.995239"
+}
