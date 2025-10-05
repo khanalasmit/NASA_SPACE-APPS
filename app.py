@@ -4,7 +4,7 @@ from sklearn.metrics import roc_auc_score,auc,roc_curve
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import pandas as pd
-
+from tested_model import OOFStackingClassifier
 
 Kepler_data=pd.read_csv('Training_data.csv')
 X=Kepler_data.drop(columns=['koi_disposition'])
