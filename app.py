@@ -102,18 +102,20 @@ elif page == "📊 Model Evaluation":
     with col2:
         st.pyplot(fig)
 
-    # Feature Importance (if available)
     st.markdown("### Feature Importance")
-   
-    importances = model.feature_importances_()
-    sorted_idx = np.argsort(importances)[::-1]
-    sorted_features = np.array(X.columns)[sorted_idx]
+    try:
+        importances = model.feature_importances_()
+        sorted_idx = np.argsort(importances)[::-1]
+        sorted_features = np.array(X.columns)[sorted_idx]
 
-    fig2, ax2 = plt.subplots(figsize=(8, 5))
-    ax2.barh(sorted_features[:15][::-1], importances[sorted_idx][:15][::-1])
-    ax2.set_xlabel("Importance")
-    ax2.set_title("Top 15 Feature Importances")
-    st.pyplot(fig2)
+        fig2, ax2 = plt.subplots(figsize=(8, 5))
+        ax2.barh(sorted_features[:15][::-1], importances[sorted_idx][:15][::-1])
+        ax2.set_xlabel("Importance")
+        ax2.set_title("Top 15 Feature Importances")
+        st.pyplot(fig2)
+    except AttributeError:
+        st.warning("Feature importance not available for this model.")
+
     
 
 # ==========================================================
