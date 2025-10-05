@@ -111,6 +111,20 @@ class OOFStackingClassifier(BaseEstimator, ClassifierMixin):
         probs = self.predict_proba(X)
         # assume binary prob in column 1
         return (probs[:, 1] > 0.5).astype(int)
+    def feature_importances_(self):
+        if hasattr(self.meta_model, "feature_importances_"):
+            return self.meta_model.feature_importances_
+        else:
+            importances = []
+            for m in self.fitted_base_models:
+                if hasattr(m, "feature_importances_"):
+                    importances.append(m.feature_importances_)
+            if importances:
+                return np.mean(importances, axis=0)
+            else:
+                raise AttributeError("No feature importances found in any model.")
+
+        
 
 # Example usage (keeps previous notebook variables/flow)
 # ...existing code...
