@@ -3,7 +3,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_curve, auc,accuracy_score
 from sklearn.model_selection import train_test_split
 from tested_model import OOFStackingClassifier
 
@@ -16,7 +16,7 @@ st.markdown("<h1 style='text-align: center;'>🪐 Extra Terrestrial Planet Predi
 # ---------------- Cached Loaders ----------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv('Training_data.csv')
+    df = pd.read_csv('Combined.csv')
     X = df.drop(columns=['koi_disposition'])
     y = df['koi_disposition']
     return X, y
@@ -39,7 +39,7 @@ page = st.sidebar.radio(
 
 # ---------------- Shared Train/Test Split ----------------
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
+    X, y, test_size=0.2, random_state=21, stratify=y
 )
 
 # ==========================================================
@@ -81,7 +81,7 @@ elif page == "📊 Model Evaluation":
     y_pred = model.predict(X_test)
 
     # Accuracy
-    accuracy = (y_pred == y_test).mean()
+    accuracy = accuracy_score(y_test,y_pred)
 
     # ROC Curve
     fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
@@ -104,12 +104,11 @@ elif page == "📊 Model Evaluation":
 
     st.markdown("### Feature Importance")
     try:
+        feature_names=X.columns
         importances = model.feature_importances_()
-        sorted_idx = np.argsort(importances)[::-1]
-        sorted_features = np.array(X.columns)[sorted_idx]
-
+        feature_imp_df = pd.DataFrame({'Feature': feature_names, 'Gini Importance': importances}).sort_values('Gini Importance', ascending=False) 
         fig2, ax2 = plt.subplots(figsize=(8, 5))
-        ax2.barh(sorted_features[:15][::-1], importances[sorted_idx][:15][::-1])
+        ax2.barh(feature_names, importances, color='skyblue')
         ax2.set_xlabel("Importance")
         ax2.set_title("Top 15 Feature Importances")
         st.pyplot(fig2)
