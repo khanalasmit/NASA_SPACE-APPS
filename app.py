@@ -78,7 +78,7 @@ if page == "🔭 Prediction":
 
                     # Find likely planets
                     planet_mask = preds == 1
-                    detected_planets = star_rows.loc[planet_mask, 'PlanetID'].tolist()
+                    detected_planets = star_rows.loc[planet_mask, 'Name'].tolist()
                     detected_probs = probs[planet_mask]
 
                     if len(detected_planets) > 0:
