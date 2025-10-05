@@ -121,6 +121,6 @@ stack_clf.fit(X_train, y_train)
 y_pred = stack_clf.predict(X_test)
 y_pred_proba = stack_clf.predict_proba(X_test)[:, 1]
 # write using a file object
-with open(r'Stacked.pkl', 'wb') as f:
+with open('Stacked.pkl', 'wb') as f:
     pickle.dump(stack_clf, f)
 # ...existing code...
