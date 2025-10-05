@@ -102,18 +102,7 @@ elif page == "📊 Model Evaluation":
     with col2:
         st.pyplot(fig)
 
-    st.markdown("### Feature Importance")
-    try:
-        feature_names=X.columns
-        importances = model.feature_importances_()
-        feature_imp_df = pd.DataFrame({'Feature': feature_names, 'Gini Importance': importances}).sort_values('Gini Importance', ascending=False) 
-        fig2, ax2 = plt.subplots(figsize=(8, 5))
-        ax2.barh(feature_names, importances, color='skyblue')
-        ax2.set_xlabel("Importance")
-        ax2.set_title("Top 15 Feature Importances")
-        st.pyplot(fig2)
-    except AttributeError:
-        st.warning("Feature importance not available for this model.")
+    
 
     
 

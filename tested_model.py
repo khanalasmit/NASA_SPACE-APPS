@@ -16,8 +16,8 @@ import pickle
 
 Kepler_data=pd.read_csv('Combined.csv')
 Kepler_data.info()
-X=Kepler_data.drop(columns=['koi_disposition'])
-y=Kepler_data['koi_disposition']
+X=Kepler_data.drop(columns=['label'])
+y=Kepler_data['label']
 le=LabelEncoder()
 le.fit(y)
 y_trf=le.transform(y)
@@ -111,18 +111,6 @@ class OOFStackingClassifier(BaseEstimator, ClassifierMixin):
         probs = self.predict_proba(X)
         # assume binary prob in column 1
         return (probs[:, 1] > 0.5).astype(int)
-    def feature_importances_(self):
-        if hasattr(self.meta_model, "feature_importances_"):
-            return self.meta_model.feature_importances_
-        else:
-            importances = []
-            for m in self.fitted_base_models:
-                if hasattr(m, "feature_importances_"):
-                    importances.append(m.feature_importances_)
-            if importances:
-                return np.mean(importances, axis=0)
-            else:
-                raise AttributeError("No feature importances found in any model.")
 
         
 
@@ -132,7 +120,7 @@ stack_clf = OOFStackingClassifier(n_splits=5, random_state=42)   # uses defaults
 stack_clf.fit(X_train, y_train)
 y_pred = stack_clf.predict(X_test)
 y_pred_proba = stack_clf.predict_proba(X_test)[:, 1]
-
+stack_clf.feature_importances_()
 # write using a file object
 with open(r'Stacked.pkl', 'wb') as f:
     pickle.dump(stack_clf, f)
