@@ -1,10 +1,5 @@
 streamlit
-rich
-markdown-it-py
-pygments
-mdurl
 numpy
 pandas
 scikit-learn
-pickle
 matplotlib
