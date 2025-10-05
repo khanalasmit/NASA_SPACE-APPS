@@ -120,10 +120,8 @@ pip install -r requirements.txt
 
 ## Authors
 
-- [Your Name Here]
+- [Asmit Khanal\
+   Asmit Kumar khanal]
 
 ---
 
-## License
-
-[Specify your license here]
