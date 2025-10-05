@@ -105,7 +105,7 @@ elif page == "📊 Model Evaluation":
     # Feature Importance (if available)
     st.markdown("### Feature Importance")
     if hasattr(model, 'feature_importances_'):
-        importances = model.feature_importances_
+        importances = model.feature_importances_()
         sorted_idx = np.argsort(importances)[::-1]
         sorted_features = np.array(X.columns)[sorted_idx]
 
