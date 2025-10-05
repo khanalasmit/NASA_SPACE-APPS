@@ -16,10 +16,10 @@ st.markdown("<h1 style='text-align: center;'>🪐 Extra Terrestrial Planet Predi
 # ---------------- Cached Loaders ----------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv('Combined.csv')
-    X = df.drop(columns=['koi_disposition'])
-    y = df['koi_disposition']
-    return X, y
+    df = pd.read_csv('Combined_new.csv')
+    X = df.drop(columns=['label','StarID','Name'])
+    y = df['label']
+    return df,X, y
 
 @st.cache_resource
 def load_model():
@@ -27,7 +27,7 @@ def load_model():
         model = pickle.load(f)
     return model
 
-X, y = load_data()
+df,X, y = load_data()
 model = load_model()
 
 # ---------------- Sidebar Navigation ----------------
@@ -43,36 +43,66 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # ==========================================================
-# 🔭 PREDICTION PAGE
+# PREDICTION PAGE
+# ==========================================================
+# ==========================================================
+# PREDICTION PAGE
 # ==========================================================
 if page == "🔭 Prediction":
     st.subheader("Predict Planet Status by Star ID")
 
-    star_id = st.text_input("Enter Star ID (index from dataset):")
-
+    star_id = st.text_input("Enter Star ID:")
     predict_btn = st.button("🔍 Predict Planetary Status")
 
     if predict_btn:
         if star_id:
             try:
-                star_id = int(star_id)
-                star_features = X.iloc[star_id].values.reshape(1, -1)
+                # Try to convert to int if StarID is numeric
+                try:
+                    star_id = int(star_id)
+                except ValueError:
+                    pass  # keep as string if not numeric
 
-                pred_prob = model.predict_proba(star_features)[0, 1]
-                pred_class = model.predict(star_features)[0]
+                # Get all rows (planets) for this StarID from the full dataframe
+                star_rows = df[df['StarID'] == star_id]
 
-                st.success(f"Prediction Probability (Planet Likely): **{pred_prob:.2f}**")
-                st.info(f"Predicted Class: **{'Planet' if pred_class == 1 else 'Not Planet'}**")
+                if star_rows.empty:
+                    st.error("⚠️ Star ID not found in the dataset.")
+                else:
+                    # Use the same feature structure as during training
+                    star_features = X.loc[star_rows.index]
 
-            except ValueError:
-                st.error("⚠️ Please enter a valid numeric Star ID.")
-            except IndexError:
-                st.error("⚠️ Star ID out of range. Please enter a valid ID.")
+                    # Predict for all planets belonging to this star
+                    preds = model.predict(star_features)
+                    probs = model.predict_proba(star_features)[:, 1]
+
+                    # Find likely planets
+                    planet_mask = preds == 1
+                    detected_planets = star_rows.loc[planet_mask, 'PlanetID'].tolist()
+                    detected_probs = probs[planet_mask]
+
+                    if len(detected_planets) > 0:
+                        st.success(f"🌍 Total detected planets for StarID '{star_id}': **{len(detected_planets)}**")
+
+                        # Create a clean results table
+                        results_df = pd.DataFrame({
+                            "PlanetID": detected_planets,
+                            "Prediction_Probability": detected_probs
+                        }).reset_index(drop=True)
+
+                        st.dataframe(results_df.style.format({
+                            "Prediction_Probability": "{:.2f}"
+                        }))
+                    else:
+                        st.warning(f"❓ No planets detected for StarID '{star_id}' — status: **Unknown**")
+
+            except Exception as e:
+                st.error(f"⚠️ An error occurred: {e}")
         else:
             st.warning("Please enter a Star ID before predicting.")
 
 # ==========================================================
-# 📊 MODEL EVALUATION PAGE
+# MODEL EVALUATION PAGE
 # ==========================================================
 elif page == "📊 Model Evaluation":
     st.subheader("Model Evaluation Metrics and Visualization")
