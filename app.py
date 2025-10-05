@@ -136,4 +136,4 @@ elif page == "⚙️ Model Pipeline":
 # ==========================================================
 # FOOTER
 # ==========================================================
-st.markdown("<hr><p style='text-align:center;'>© 2025 Exoplanet Predictor | Built with Streamlit 🚀</p>", unsafe_allow_html=True)
+st.markdown("<hr><p style='text-align:center;'>© 2025 Exoplanet Predictor | Built with Streamlit </p>", unsafe_allow_html=True)
