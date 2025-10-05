@@ -12,7 +12,9 @@ y=Kepler_data['koi_disposition']
 
 X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=42,stratify=y)
 
-stack_clf=pickle.load(('Stacked.pkl','rb'))
+with open(r'Stacked.pkl', 'rb') as f:
+    stack_clf = pickle.load(f)
+
 y_pred_proba=stack_clf.predict_proba(X_test)[:,1]
 # Compute ROC curve and AUC
 fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
