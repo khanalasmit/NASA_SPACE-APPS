@@ -27,6 +27,7 @@ def load_model():
         model = pickle.load(f)
     return model
 
+
 df,X, y = load_data()
 model = load_model()
 
